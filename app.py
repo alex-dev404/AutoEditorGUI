@@ -1,141 +1,323 @@
 import os
+import sys
 import subprocess
+import threading
 import customtkinter as ctk
-from tkinter import filedialog
 
-# =========================
+from tkinter import filedialog
+from PIL import Image
+from tkinterdnd2 import DND_FILES, TkinterDnD
+
+# =========================================
 # CONFIG
-# =========================
+# =========================================
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
-# =========================
+VIDEO_EXTENSIONS = [
+    ".mp4",
+    ".mov",
+    ".avi",
+    ".mkv",
+    ".webm"
+]
+
+video_paths = []
+thumbnail_refs = []
+
+# =========================================
 # APP
-# =========================
+# =========================================
 
-app = ctk.CTk()
+app = TkinterDnD.Tk()
 
-app.title("Auto Editor GUI")
-app.geometry("1100x700")
+app.title("AutoCutStudio BY alex-dev404")
+app.geometry("1280x760")
+app.minsize(1000, 650)
+app.configure(bg="#101010")
+def resource_path(relative_path):
 
-selected_folder = ""
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
 
-# =========================
-# FUNÇÕES
-# =========================
+    return os.path.join(base_path, relative_path)
 
-def escolher_pasta():
+app.iconbitmap(
+    resource_path("icon.ico")
+)
 
-    global selected_folder
+# =========================================
+# FONTS
+# =========================================
 
-    pasta = filedialog.askdirectory()
+TITLE_FONT = ("Impact", 34)
+TEXT_FONT = ("Bahnschrift", 15)
+SUBTITLE_FONT = ("Bahnschrift", 18)
+BIG_FONT = ("Bahnschrift", 22)
 
-    if pasta:
+# =========================================
+# LOG
+# =========================================
 
-        selected_folder = pasta
+def log(texto):
 
-        folder_label.configure(
-            text=pasta
+    output_box.insert("end", f"{texto}\n")
+    output_box.see("end")
+    app.update()
+
+# =========================================
+# THUMBNAILS
+# =========================================
+
+def gerar_thumbnail(video_path):
+
+    try:
+
+        thumb_path = os.path.join(
+            os.getcwd(),
+            f"thumb_{abs(hash(video_path))}.jpg"
         )
 
-        carregar_videos()
+        comando = (
+            f'ffmpeg -y -ss 00:00:01 '
+            f'-i "{video_path}" '
+            f'-frames:v 1 '
+            f'-q:v 2 '
+            f'"{thumb_path}"'
+        )
 
+        subprocess.run(
+            comando,
+            shell=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
 
-def carregar_videos():
+        if os.path.exists(thumb_path):
 
-    video_list.delete("1.0", "end")
+            image = Image.open(thumb_path)
 
-    if not selected_folder:
-        return
+            image = image.resize((140, 80))
 
-    extensoes = [
-        ".mp4",
-        ".mov",
-        ".avi",
-        ".mkv"
-    ]
+            thumb = ctk.CTkImage(
+                light_image=image,
+                dark_image=image,
+                size=(140, 80)
+            )
 
-    for arquivo in os.listdir(selected_folder):
+            return thumb
+
+    except:
+        return None
+
+# =========================================
+# UPDATE VIDEO LIST
+# =========================================
+
+def atualizar_lista_videos():
+
+    global thumbnail_refs
+
+    for widget in scroll_frame.winfo_children():
+        widget.destroy()
+
+    thumbnail_refs.clear()
+
+    for video in video_paths:
+
+        card = ctk.CTkFrame(
+            scroll_frame,
+            fg_color="#181818",
+            corner_radius=16,
+            height=105
+        )
+
+        card.pack(
+            fill="x",
+            padx=8,
+            pady=8
+        )
+
+        thumb = gerar_thumbnail(video)
+
+        if thumb:
+
+            thumbnail_refs.append(thumb)
+
+            thumb_label = ctk.CTkLabel(
+                card,
+                image=thumb,
+                text=""
+            )
+
+            thumb_label.pack(
+                side="left",
+                padx=10,
+                pady=10
+            )
+
+        info_frame = ctk.CTkFrame(
+            card,
+            fg_color="transparent"
+        )
+
+        info_frame.pack(
+            side="left",
+            fill="both",
+            expand=True,
+            padx=10
+        )
+
+        nome = os.path.basename(video)
+
+        title = ctk.CTkLabel(
+            info_frame,
+            text=nome,
+            font=BIG_FONT,
+            anchor="w"
+        )
+
+        title.pack(
+            anchor="w",
+            pady=(18, 5)
+        )
+
+        subtitle = ctk.CTkLabel(
+            info_frame,
+            text="Pronto para processar",
+            font=TEXT_FONT,
+            text_color="#999999"
+        )
+
+        subtitle.pack(anchor="w")
+
+# =========================================
+# LOAD VIDEOS
+# =========================================
+
+def carregar_videos_pasta(pasta):
+
+    video_paths.clear()
+
+    for arquivo in os.listdir(pasta):
+
+        caminho = os.path.join(
+            pasta,
+            arquivo
+        )
 
         if any(
             arquivo.lower().endswith(ext)
-            for ext in extensoes
+            for ext in VIDEO_EXTENSIONS
         ):
 
-            video_list.insert(
-                "end",
-                f"📹 {arquivo}\n"
-            )
+            video_paths.append(caminho)
 
+    atualizar_lista_videos()
 
-def instalar_dependencias():
+# =========================================
+# SELECT FOLDER
+# =========================================
+
+def escolher_pasta():
+
+    pasta = filedialog.askdirectory()
+
+    if not pasta:
+        return
+
+    folder_label.configure(
+        text=pasta
+    )
+
+    carregar_videos_pasta(pasta)
+
+# =========================================
+# DRAG DROP
+# =========================================
+
+def drop(event):
+
+    arquivos = app.tk.splitlist(event.data)
+
+    for arquivo in arquivos:
+
+        arquivo = arquivo.replace("{", "").replace("}", "")
+
+        if os.path.isfile(arquivo):
+
+            if any(
+                arquivo.lower().endswith(ext)
+                for ext in VIDEO_EXTENSIONS
+            ):
+
+                if arquivo not in video_paths:
+
+                    video_paths.append(arquivo)
+
+    atualizar_lista_videos()
+
+# =========================================
+# INSTALL DEPENDENCIES
+# =========================================
+
+def instalar_dependencias_thread():
 
     comandos = [
         "pip install auto-editor",
-        "pip install ffmpeg-python"
+        "pip install ffmpeg-python",
+        "pip install customtkinter",
+        "pip install pillow",
+        "pip install tkinterdnd2"
     ]
-
-    video_list.delete("1.0", "end")
 
     total = len(comandos)
 
+    progress_bar.set(0)
+
     for i, cmd in enumerate(comandos, start=1):
 
-        video_list.insert(
-            "end",
-            f"[{i}/{total}] INSTALANDO:\n{cmd}\n\n"
+        status_label.configure(
+            text=f"Instalando dependências ({i}/{total})"
         )
 
-        video_list.see("end")
-
-        app.update()
+        log(f"\nExecutando:\n{cmd}\n")
 
         resultado = subprocess.run(
             cmd,
             shell=True
         )
 
+        progress_bar.set(i / total)
+
         if resultado.returncode == 0:
-
-            video_list.insert(
-                "end",
-                "✅ INSTALADO COM SUCESSO\n\n"
-            )
-
+            log("✅ Instalado")
         else:
+            log("❌ Erro")
 
-            video_list.insert(
-                "end",
-                "❌ ERRO NA INSTALAÇÃO\n\n"
-            )
-
-        video_list.see("end")
-
-        app.update()
-
-    video_list.insert(
-        "end",
-        "\n🎉 TODAS AS DEPENDÊNCIAS FORAM INSTALADAS!\n"
+    status_label.configure(
+        text="Dependências instaladas"
     )
 
-    output_box.insert(
-        "end",
-        "\nDependências instaladas!\n"
-    )
+def instalar_dependencias():
 
-    output_box.see("end")
+    threading.Thread(
+        target=instalar_dependencias_thread,
+        daemon=True
+    ).start()
 
+# =========================================
+# PROCESS VIDEOS
+# =========================================
 
-def processar_videos():
+def processar_videos_thread():
 
-    if not selected_folder:
+    if len(video_paths) == 0:
 
-        output_box.insert(
-            "end",
-            "\nSelecione uma pasta primeiro.\n"
-        )
-
+        log("Nenhum vídeo selecionado")
         return
 
     export_map = {
@@ -150,69 +332,119 @@ def processar_videos():
         export_option.get()
     ]
 
-    margin = margin_slider.get()
+    total = len(video_paths)
 
-    extensoes = [
-        ".mp4",
-        ".mov",
-        ".avi",
-        ".mkv"
-    ]
+    progress_bar.set(0)
 
-    videos = []
+    for i, video in enumerate(video_paths, start=1):
 
-    for arquivo in os.listdir(selected_folder):
+        nome = os.path.basename(video)
 
-        if any(
-            arquivo.lower().endswith(ext)
-            for ext in extensoes
-        ):
-
-            videos.append(arquivo)
-
-    total = len(videos)
-
-    if total == 0:
-
-        output_box.insert(
-            "end",
-            "\nNenhum vídeo encontrado.\n"
+        status_label.configure(
+            text=f"Processando: {nome}"
         )
 
-        return
+        # =========================================
+        # OUTPUT NO MESMO LOCAL
+        # =========================================
 
-    video_list.delete("1.0", "end")
+        pasta_video = os.path.dirname(video)
 
-    for i, arquivo in enumerate(videos, start=1):
+        nome_video = os.path.splitext(
+            os.path.basename(video)
+        )[0]
 
-        caminho = os.path.join(
-            selected_folder,
-            arquivo
+        ext_map = {
+            "resolve": ".drt",
+            "premiere": ".xml",
+            "final-cut-pro": ".fcpxml",
+            "shotcut": ".mlt",
+            "kdenlive": ".kdenlive"
+        }
+
+        extensao = ext_map.get(
+            export_value,
+            ".xml"
         )
 
-        video_list.insert(
-            "end",
-            f"[{i}/{total}] PROCESSANDO -> {arquivo}\n"
+        arquivo_saida = os.path.join(
+            pasta_video,
+            nome_video + extensao
         )
 
-        video_list.see("end")
-
-        app.update()
+        # =========================================
+        # COMANDO
+        # =========================================
 
         comando = (
-            f'auto-editor "{caminho}" '
+            f'auto-editor "{video}" '
             f'--export {export_value} '
-            f'--margin {margin:.2f}sec'
+            f'--output "{arquivo_saida}" '
         )
 
-        output_box.insert(
-            "end",
-            f"\nExecutando:\n{comando}\n"
+        # =========================================
+        # MARGIN NORMAL
+        # =========================================
+
+        margin = margin_slider.get()
+
+        comando += (
+            f'--margin {margin:.2f}sec '
         )
 
-        output_box.see("end")
+        # =========================================
+        # MARGIN BEFORE / AFTER
+        # =========================================
 
-        app.update()
+        margin_before = margin_before_slider.get()
+        margin_after = margin_after_slider.get()
+
+        if margin_before > 0 or margin_after > 0:
+
+            comando += (
+                f'--margin '
+                f'{margin_before:.2f}sec,'
+                f'{margin_after:.2f}sec '
+            )
+
+        # =========================================
+        # PADDING
+        # =========================================
+
+        padding = padding_slider.get()
+
+        if padding > 0:
+
+            comando += (
+                f'--cut-out '
+                f'0,{padding:.2f}sec '
+            )
+
+        # =========================================
+        # AUDIO THRESHOLD
+        # =========================================
+
+        threshold = threshold_slider.get()
+
+        if threshold > 0:
+
+            comando += (
+                f'--edit audio:-{threshold:.0f}dB '
+            )
+
+        # =========================================
+        # MOTION DETECTION
+        # =========================================
+
+        motion = motion_slider.get()
+
+        if motion > 0:
+
+            comando += (
+                f'--edit motion:{motion:.2f} '
+            )
+
+        log(f"\nExecutando:\n{comando}\n")
 
         resultado = subprocess.run(
             comando,
@@ -221,141 +453,263 @@ def processar_videos():
 
         if resultado.returncode == 0:
 
-            video_list.insert(
-                "end",
-                f"✅ FINALIZADO -> {arquivo}\n\n"
-            )
+            log(f"✅ Finalizado: {nome}")
 
         else:
 
-            video_list.insert(
-                "end",
-                f"❌ ERRO -> {arquivo}\n\n"
-            )
+            log(f"❌ Erro: {nome}")
 
-        video_list.see("end")
+        progress_bar.set(i / total)
 
-        app.update()
-
-    video_list.insert(
-        "end",
-        "\n🎉 TODOS OS VÍDEOS FORAM PROCESSADOS!\n"
+    status_label.configure(
+        text="Todos os vídeos foram processados"
     )
 
-    output_box.insert(
-        "end",
-        "\nProcessamento concluído!\n"
-    )
+def processar_videos():
 
-    output_box.see("end")
+    threading.Thread(
+        target=processar_videos_thread,
+        daemon=True
+    ).start()
 
+# =========================================
+# UPDATE LABELS
+# =========================================
 
 def atualizar_margin(valor):
-
     margin_value.configure(
         text=f"{valor:.2f} sec"
     )
 
-# =========================
-# TÍTULO
-# =========================
+def atualizar_margin_before(valor):
+    margin_before_value.configure(
+        text=f"{valor:.2f} sec"
+    )
 
-title = ctk.CTkLabel(
+def atualizar_margin_after(valor):
+    margin_after_value.configure(
+        text=f"{valor:.2f} sec"
+    )
+
+def atualizar_padding(valor):
+    padding_value.configure(
+        text=f"{valor:.2f} sec"
+    )
+
+def atualizar_threshold(valor):
+    threshold_value.configure(
+        text=f"-{valor:.0f} dB"
+    )
+
+def atualizar_motion(valor):
+    motion_value.configure(
+        text=f"{valor:.2f}"
+    )
+
+# =========================================
+# HEADER
+# =========================================
+
+header = ctk.CTkFrame(
     app,
-    text="AUTO EDITOR GUI",
-    font=("Segoe UI", 30, "bold")
+    height=80,
+    fg_color="#101010"
 )
 
-title.pack(pady=20)
+header.pack(
+    fill="x",
+    padx=10,
+    pady=8
+)
 
-# =========================
-# BOTÃO PASTA
-# =========================
+logo = ctk.CTkLabel(
+    header,
+    text="AUTOCUTSTUDIO",
+    font=TITLE_FONT
+)
+
+logo.pack(
+    side="left",
+    padx=15
+)
+
+status_label = ctk.CTkLabel(
+    header,
+    text="READY",
+    font=SUBTITLE_FONT,
+    text_color="#00ff99"
+)
+
+status_label.pack(
+    side="right",
+    padx=20
+)
+
+# =========================================
+# TOPBAR
+# =========================================
+
+topbar = ctk.CTkFrame(
+    app,
+    fg_color="#161616",
+    corner_radius=16,
+    height=70
+)
+
+topbar.pack(
+    fill="x",
+    padx=15,
+    pady=5
+)
 
 folder_button = ctk.CTkButton(
-    app,
+    topbar,
     text="Selecionar Pasta",
     command=escolher_pasta,
-    width=250,
-    height=40
+    font=TEXT_FONT,
+    height=40,
+    width=180
 )
 
-folder_button.pack(pady=10)
+folder_button.pack(
+    side="left",
+    padx=12,
+    pady=12
+)
+
+install_button = ctk.CTkButton(
+    topbar,
+    text="Instalar Dependências",
+    command=instalar_dependencias,
+    font=TEXT_FONT,
+    fg_color="#008c55",
+    hover_color="#00a865",
+    height=40,
+    width=210
+)
+
+install_button.pack(
+    side="left",
+    padx=8
+)
+
+process_button = ctk.CTkButton(
+    topbar,
+    text="PROCESSAR",
+    command=processar_videos,
+    font=("Impact", 20),
+    fg_color="#0066ff",
+    hover_color="#3385ff",
+    width=220,
+    height=44
+)
+
+process_button.pack(
+    side="right",
+    padx=15
+)
+
+# =========================================
+# DROP AREA
+# =========================================
 
 folder_label = ctk.CTkLabel(
     app,
-    text="Nenhuma pasta selecionada"
+    text="Arraste vídeos aqui ou selecione uma pasta",
+    font=SUBTITLE_FONT,
+    height=55,
+    fg_color="#181818",
+    corner_radius=14
 )
 
-folder_label.pack()
+folder_label.pack(
+    fill="x",
+    padx=15,
+    pady=8
+)
 
-# =========================
-# LISTA DE VÍDEOS
-# =========================
+folder_label.drop_target_register(DND_FILES)
+folder_label.dnd_bind("<<Drop>>", drop)
 
-video_frame = ctk.CTkFrame(app)
+# =========================================
+# MAIN
+# =========================================
 
-video_frame.pack(
+main_frame = ctk.CTkFrame(
+    app,
+    fg_color="transparent"
+)
+
+main_frame.pack(
     fill="both",
-    expand=False,
-    padx=20,
-    pady=20
+    expand=True,
+    padx=15,
+    pady=10
 )
 
-video_list = ctk.CTkTextbox(
-    video_frame,
-    height=200
+# =========================================
+# LEFT PANEL
+# =========================================
+
+left_panel = ctk.CTkFrame(
+    main_frame,
+    fg_color="#161616",
+    corner_radius=18
 )
 
-video_list.pack(
+left_panel.pack(
+    side="left",
+    fill="both",
+    expand=True,
+    padx=(0, 10)
+)
+
+scroll_frame = ctk.CTkScrollableFrame(
+    left_panel,
+    fg_color="transparent"
+)
+
+scroll_frame.pack(
     fill="both",
     expand=True,
     padx=10,
     pady=10
 )
 
-# =========================
-# MARGIN
-# =========================
+# =========================================
+# RIGHT PANEL
+# =========================================
 
-timeline_label = ctk.CTkLabel(
-    app,
-    text="Margin / Corte",
-    font=("Segoe UI", 20, "bold")
+right_panel = ctk.CTkScrollableFrame(
+    main_frame,
+    width=320,
+    fg_color="#161616",
+    corner_radius=18
 )
 
-timeline_label.pack(pady=10)
-
-margin_slider = ctk.CTkSlider(
-    app,
-    from_=0,
-    to=2,
-    number_of_steps=200,
-    width=600,
-    command=atualizar_margin
+right_panel.pack(
+    side="right",
+    fill="y"
 )
 
-margin_slider.set(0.05)
+# =========================================
+# EXPORT
+# =========================================
 
-margin_slider.pack(pady=10)
-
-margin_value = ctk.CTkLabel(
-    app,
-    text="0.05 sec"
+export_title = ctk.CTkLabel(
+    right_panel,
+    text="EXPORT",
+    font=("Impact", 24)
 )
 
-margin_value.pack()
-
-# =========================
-# EXPORT MENU
-# =========================
+export_title.pack(pady=(15, 5))
 
 export_option = ctk.StringVar(
     value="Resolve"
 )
 
 export_menu = ctk.CTkOptionMenu(
-    app,
+    right_panel,
     values=[
         "Resolve",
         "Premiere",
@@ -364,64 +718,253 @@ export_menu = ctk.CTkOptionMenu(
         "Kdenlive"
     ],
     variable=export_option,
-    width=300
+    width=250,
+    height=38,
+    font=TEXT_FONT
 )
 
-export_menu.pack(pady=20)
+export_menu.pack(pady=5)
 
-# =========================
-# BOTÕES
-# =========================
+# =========================================
+# MARGIN NORMAL
+# =========================================
 
-button_frame = ctk.CTkFrame(app)
-
-button_frame.pack(pady=20)
-
-install_button = ctk.CTkButton(
-    button_frame,
-    text="Instalar Dependências",
-    command=instalar_dependencias,
-    fg_color="green",
-    width=220
+margin_title = ctk.CTkLabel(
+    right_panel,
+    text="Margin / Corte",
+    font=SUBTITLE_FONT
 )
 
-install_button.grid(
-    row=0,
-    column=0,
-    padx=10
+margin_title.pack(pady=(20, 3))
+
+margin_slider = ctk.CTkSlider(
+    right_panel,
+    from_=0,
+    to=2,
+    number_of_steps=200,
+    width=240,
+    command=atualizar_margin
 )
 
-process_button = ctk.CTkButton(
-    button_frame,
-    text="Processar Vídeos",
-    command=processar_videos,
-    width=220
+margin_slider.set(0.20)
+
+margin_slider.pack()
+
+margin_value = ctk.CTkLabel(
+    right_panel,
+    text="0.20 sec",
+    font=TEXT_FONT
 )
 
-process_button.grid(
-    row=0,
-    column=1,
-    padx=10
+margin_value.pack()
+
+# =========================================
+# MARGIN BEFORE
+# =========================================
+
+margin_before_title = ctk.CTkLabel(
+    right_panel,
+    text="Margin Before",
+    font=SUBTITLE_FONT
 )
 
-# =========================
-# OUTPUT
-# =========================
+margin_before_title.pack(pady=(20, 3))
+
+margin_before_slider = ctk.CTkSlider(
+    right_panel,
+    from_=0,
+    to=2,
+    number_of_steps=200,
+    width=240,
+    command=atualizar_margin_before
+)
+
+margin_before_slider.set(0)
+
+margin_before_slider.pack()
+
+margin_before_value = ctk.CTkLabel(
+    right_panel,
+    text="0.00 sec",
+    font=TEXT_FONT
+)
+
+margin_before_value.pack()
+
+# =========================================
+# MARGIN AFTER
+# =========================================
+
+margin_after_title = ctk.CTkLabel(
+    right_panel,
+    text="Margin After",
+    font=SUBTITLE_FONT
+)
+
+margin_after_title.pack(pady=(20, 3))
+
+margin_after_slider = ctk.CTkSlider(
+    right_panel,
+    from_=0,
+    to=2,
+    number_of_steps=200,
+    width=240,
+    command=atualizar_margin_after
+)
+
+margin_after_slider.set(0)
+
+margin_after_slider.pack()
+
+margin_after_value = ctk.CTkLabel(
+    right_panel,
+    text="0.00 sec",
+    font=TEXT_FONT
+)
+
+margin_after_value.pack()
+
+# =========================================
+# PADDING
+# =========================================
+
+padding_title = ctk.CTkLabel(
+    right_panel,
+    text="Padding",
+    font=SUBTITLE_FONT
+)
+
+padding_title.pack(pady=(20, 3))
+
+padding_slider = ctk.CTkSlider(
+    right_panel,
+    from_=0,
+    to=2,
+    number_of_steps=200,
+    width=240,
+    command=atualizar_padding
+)
+
+padding_slider.set(0)
+
+padding_slider.pack()
+
+padding_value = ctk.CTkLabel(
+    right_panel,
+    text="0.00 sec",
+    font=TEXT_FONT
+)
+
+padding_value.pack()
+
+# =========================================
+# THRESHOLD
+# =========================================
+
+threshold_title = ctk.CTkLabel(
+    right_panel,
+    text="Audio Threshold",
+    font=SUBTITLE_FONT
+)
+
+threshold_title.pack(pady=(20, 3))
+
+threshold_slider = ctk.CTkSlider(
+    right_panel,
+    from_=0,
+    to=40,
+    number_of_steps=40,
+    width=240,
+    command=atualizar_threshold
+)
+
+threshold_slider.set(0)
+
+threshold_slider.pack()
+
+threshold_value = ctk.CTkLabel(
+    right_panel,
+    text="-0 dB",
+    font=TEXT_FONT
+)
+
+threshold_value.pack()
+
+# =========================================
+# MOTION
+# =========================================
+
+motion_title = ctk.CTkLabel(
+    right_panel,
+    text="Motion Detection",
+    font=SUBTITLE_FONT
+)
+
+motion_title.pack(pady=(20, 3))
+
+motion_slider = ctk.CTkSlider(
+    right_panel,
+    from_=0,
+    to=1,
+    number_of_steps=100,
+    width=240,
+    command=atualizar_motion
+)
+
+motion_slider.set(0)
+
+motion_slider.pack()
+
+motion_value = ctk.CTkLabel(
+    right_panel,
+    text="0.00",
+    font=TEXT_FONT
+)
+
+motion_value.pack()
+
+# =========================================
+# PROGRESS BAR
+# =========================================
+
+progress_bar = ctk.CTkProgressBar(
+    right_panel,
+    width=250,
+    height=16
+)
+
+progress_bar.pack(
+    pady=25
+)
+
+progress_bar.set(0)
+
+# =========================================
+# LOGS
+# =========================================
+
+logs_title = ctk.CTkLabel(
+    right_panel,
+    text="LOGS",
+    font=("Impact", 22)
+)
+
+logs_title.pack()
 
 output_box = ctk.CTkTextbox(
-    app,
-    height=180
+    right_panel,
+    width=260,
+    height=180,
+    font=("Consolas", 12)
 )
 
 output_box.pack(
-    fill="both",
-    expand=True,
-    padx=20,
-    pady=20
+    padx=10,
+    pady=10
 )
 
-# =========================
+# =========================================
 # LOOP
-# =========================
+# =========================================
 
 app.mainloop()

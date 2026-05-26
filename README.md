@@ -1,75 +1,105 @@
-# AutoEditorGUI
+# AutoCutStudio 🎬
 
-Modern GUI for Auto-Editor on Windows and Linux.
+Interface profissional para o **Auto-Editor** com:
 
-A modern desktop interface for the amazing Auto-Editor project, focused on speed, automation and video editor workflow.
-
----
-
-# Features
-
-- Modern Windows 11 style interface
-- Automatic silence cutting
-- Margin slider control
-- Multi-video batch processing
-- Export directly to:
-  - DaVinci Resolve
-  - Adobe Premiere
-  - Final Cut Pro
-  - Shotcut
-  - Kdenlive
-- Automatic dependency installer
-- Real-time processing status
-- Simple EXE generation
-- Lightweight and fast
+* Drag & Drop
+* Export para Premiere / Resolve / Kdenlive
+* Motion Detection
+* Audio Threshold
+* Thumbnails automáticas
+* Progress Bar
+* Logs em tempo real
+* Interface moderna estilo editor de vídeo
 
 ---
 
-# Preview
+# ✨ Preview
 
-## Main Features
-
-- Select video folder
-- Automatic video detection
-- Real-time progress updates
-- Margin editor
-- Export presets
-- Processing logs
-
----
-
-# Built With
-
-- Python
-- CustomTkinter
-- Auto-Editor
-- FFmpeg
-- PyInstaller
-
----
-
-# Installation
-
-## Clone repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/AutoCutStudio.git
-cd AutoCutStudio
+```text
+✔ Drag and Drop de vídeos
+✔ Processamento automático
+✔ Export profissional
+✔ Interface moderna
+✔ Instalação automática de dependências
+✔ Compatível com Windows
 ```
 
 ---
 
-# Install dependencies
+# 🚀 Tecnologias
+
+* Python 3.11
+* CustomTkinter
+* Auto-Editor
+* FFmpeg
+* Pillow
+* TkinterDnD2
+
+---
+
+# 📦 Instalação
+
+# 1️⃣ Baixe o projeto
+
+Clone o repositório:
 
 ```bash
-pip install customtkinter
-pip install auto-editor
-pip install ffmpeg-python
+git clone https://github.com/SEU-USUARIO/AutoCutStudio-PRO.git
+```
+
+ou baixe o ZIP.
+
+---
+
+# 2️⃣ Execute o instalador
+
+Clique duas vezes em:
+
+```text
+install_auto_editor.bat
+```
+
+Esse script instala automaticamente:
+
+* Python 3.11
+* FFmpeg
+* Auto-Editor
+* Dependências do app
+
+---
+
+# ⚠ IMPORTANTE
+
+Execute o `.bat` como:
+
+```text
+Administrador
 ```
 
 ---
 
-# Run application
+# 🧠 O que o instalador faz
+
+O script instala:
+
+```text
+✔ Python 3.11
+✔ FFmpeg
+✔ auto-editor
+✔ customtkinter
+✔ pillow
+✔ tkinterdnd2
+✔ ffmpeg-python
+✔ pyinstaller
+```
+
+---
+
+# ▶ Como abrir o programa
+
+Depois da instalação:
+
+## Modo Python
 
 ```bash
 python app.py
@@ -77,197 +107,438 @@ python app.py
 
 ---
 
-# Generate EXE
-
-```bash
-pyinstaller --onefile --windowed app.py
-```
-
----
-
-# Windows Build
-
-Recommended:
-
-```bash
-pyinstaller --onefile --windowed --clean app.py
-```
-
-With icon:
-
-```bash
-pyinstaller --onefile --windowed --icon=icon.ico app.py
-```
-
----
-
-# Linux Version
-
-Linux support is planned.
-
-Future Linux support includes:
-
-- Ubuntu
-- Fedora
-- Arch Linux
-- Linux Mint
-
-Example Linux setup:
-
-```bash
-sudo apt install ffmpeg
-pip install auto-editor
-pip install customtkinter
-```
-
-Run:
-
-```bash
-python3 app.py
-```
-
----
-
-# Supported Export Formats
-
-| Editor | Supported |
-|--------|------------|
-| DaVinci Resolve | ✅ |
-| Adobe Premiere | ✅ |
-| Final Cut Pro | ✅ |
-| Shotcut | ✅ |
-| Kdenlive | ✅ |
-
----
-
-# How It Works
-
-The app uses Auto-Editor to detect:
-
-- silence
-- loud sections
-- pauses
-- dead moments
-
-Then automatically creates editable timelines for professional editors.
-
----
-
-# Project Structure
+## Modo EXE
 
 ```text
-AutoCutStudio/
-│
-├── app.py
-├── README.md
-├── requirements.txt
-├── icon.ico
-├── assets/
-└── dist/
+AutoCutStudio PRO.exe
 ```
 
 ---
 
-# Future Improvements
+# 🛠 Como gerar o EXE
 
-## Planned Features
-
-### UI Improvements
-- Timeline preview
-- Drag and drop support
-- Real video thumbnails
-- Dark/Light mode
-- Custom themes
-
-### Editing Features
-- MP4 direct export
-- Auto subtitle generation
-- AI scene detection
-- Audio normalization
-- Multi-track support
-
-### Performance
-- GPU acceleration
-- Multi-thread processing
-- Background rendering
-- Queue system
-
-### Advanced Features
-- Real video preview
-- Timeline zoom
-- XML timeline preview
-- Preset manager
-- Custom export profiles
-
-### Linux & MacOS
-- Native Linux package
-- AppImage support
-- MacOS support
+```bash
+pyinstaller ^
+--onefile ^
+--windowed ^
+--clean ^
+--noconfirm ^
+--name "AutoCutStudio PRO" ^
+--icon=icone.ico ^
+app.py
+```
 
 ---
 
-# Requirements
+# 🎞 Exportações Suportadas
 
-- Python 3.11+
-- FFmpeg
-- Auto-Editor
-
----
-
-# Screenshots
-
-Coming soon.
+| Editor          | Export      |
+| --------------- | ----------- |
+| DaVinci Resolve | `.drt`      |
+| Premiere Pro    | `.xml`      |
+| Final Cut       | `.fcpxml`   |
+| Shotcut         | `.mlt`      |
+| Kdenlive        | `.kdenlive` |
 
 ---
 
-# Credits
+# 🎯 Funções da Interface
 
-Huge thanks to:
+# 📂 Selecionar Pasta
 
-## Auto-Editor
-https://github.com/WyattBlue/auto-editor
+Carrega automaticamente todos os vídeos da pasta.
 
----
+Formatos suportados:
 
-# License
-
-MIT License
-
----
-
-# Contributing
-
-Pull requests are welcome.
-
-For major changes, please open an issue first.
+```text
+.mp4
+.mov
+.avi
+.mkv
+.webm
+```
 
 ---
 
-# Roadmap
+# 🖱 Drag & Drop
 
-## Version 1.0
-- Basic GUI
-- Batch processing
-- Export presets
+Você pode arrastar:
 
-## Version 1.5
-- Timeline preview
-- Drag and drop
-- Progress bar
+* vídeos
+* múltiplos vídeos
 
-## Version 2.0
-- Full editor-style interface
-- Video preview
-- GPU acceleration
+diretamente para o app.
 
 ---
 
-# Author
+# 🎬 Margin / Corte
 
-Developed by alex-dev404 / Alex dos Santos
+O principal sistema de corte automático.
+
+## Padrão:
+
+```text
+0.20 sec
+```
+
+Esse valor adiciona pequenos espaços antes e depois dos cortes para deixar a edição mais natural.
+
+Exemplo:
+
+```text
+0.20 sec
+```
+
+Adiciona:
+
+* 0.20s antes
+* 0.20s depois
+
+dos cortes detectados.
 
 ---
 
-# Star the project
+# ⬅ Margin Before
 
-If this project helps you, leave a star on GitHub.
+Desativado por padrão.
+
+Controla quanto tempo será preservado:
+
+* ANTES do corte
+
+Exemplo:
+
+```text
+0.50 sec
+```
+
+Mantém:
+
+```text
+0.5 segundos antes
+```
+
+do trecho detectado.
+
+---
+
+# ➡ Margin After
+
+Desativado por padrão.
+
+Controla quanto tempo será preservado:
+
+* DEPOIS do corte
+
+Exemplo:
+
+```text
+1.00 sec
+```
+
+Mantém:
+
+```text
+1 segundo depois
+```
+
+do trecho detectado.
+
+---
+
+# 🧩 Padding
+
+Desativado por padrão.
+
+Usado para adicionar espaço extra de segurança em cortes agressivos.
+
+Ajuda em:
+
+* vídeos rápidos
+* gameplay
+* vídeos com respiração curta
+* cortes muito secos
+
+---
+
+# 🔊 Audio Threshold
+
+Sistema de detecção de silêncio.
+
+Medido em:
+
+```text
+dB
+```
+
+Quanto MAIOR o valor:
+
+* mais agressivo o corte
+
+---
+
+## Exemplos
+
+### `-5 dB`
+
+Corta apenas silêncios muito fortes.
+
+### `-20 dB`
+
+Corta pausas médias.
+
+### `-35 dB`
+
+Corta praticamente tudo que estiver baixo.
+
+---
+
+# 🎥 Motion Detection
+
+Sistema experimental de detecção de movimento.
+
+Permite cortar:
+
+* trechos sem movimento
+* telas paradas
+* pausas visuais
+
+Muito útil para:
+
+* gameplay
+* webcam
+* podcast
+* react
+
+---
+
+# 🖼 Thumbnails Automáticas
+
+O app gera previews automáticas dos vídeos usando:
+
+* FFmpeg
+* Pillow
+
+---
+
+# 📊 Progress Bar
+
+Mostra:
+
+* instalação de dependências
+* progresso do processamento
+* conclusão dos vídeos
+
+---
+
+# 📝 Logs em Tempo Real
+
+O painel de logs mostra:
+
+* comandos executados
+* erros
+* status do Auto-Editor
+* progresso
+
+---
+
+# 📁 Salvamento dos Arquivos
+
+Os arquivos exportados são salvos:
+
+```text
+no mesmo local do vídeo original
+```
+
+---
+
+# 💡 Exemplo
+
+```text
+video.mp4
+↓
+video.xml
+```
+
+ou:
+
+```text
+video.kdenlive
+video.drt
+video.fcpxml
+```
+
+---
+
+# 🧠 Atualizações Recentes
+
+## ✔ Sistema novo de UI
+
+* Interface mais profissional
+* Melhor organização
+* Layout compacto
+* Compatível com monitores menores
+
+---
+
+## ✔ Drag and Drop
+
+Agora suporta:
+
+* múltiplos vídeos
+* importação rápida
+
+---
+
+## ✔ Motion Detection
+
+Nova função experimental.
+
+---
+
+## ✔ Audio Threshold
+
+Agora configurável pela interface.
+
+---
+
+## ✔ Margin Before / After
+
+Separados individualmente.
+
+---
+
+## ✔ Progress Bar Real
+
+Sem travamentos durante processamento.
+
+---
+
+## ✔ Sistema de Logs
+
+Mais detalhado.
+
+---
+
+# ⚠ Possíveis Problemas
+
+# FFmpeg não encontrado
+
+Reinstale:
+
+```text
+install_auto_editor.bat
+```
+
+---
+
+# Python não reconhecido
+
+Feche e abra o Windows novamente após instalar.
+
+---
+
+# Thumbnail não aparece
+
+O FFmpeg pode:
+
+* não estar no PATH
+* estar bloqueado
+* não instalado corretamente
+
+---
+
+# 🛣 Roadmap Futuro
+
+# 🎨 Melhorias Visuais
+
+* tema claro
+* mais animações
+* timeline real
+* preview player
+
+---
+
+# ⚡ Performance
+
+* aceleração GPU
+* processamento paralelo
+* cache de thumbnails
+
+---
+
+# 🧠 Recursos Avançados
+
+* AI Silence Detection
+* AI Scene Detection
+* Auto Zoom
+* Auto Subtitle
+* Auto Reframe
+
+---
+
+# 🐧 Versão Linux
+
+Planejado suporte para:
+
+* Ubuntu
+* PopOS
+* Arch
+* Fedora
+
+com:
+
+* AppImage
+* Flatpak
+* .deb
+
+---
+
+# 🛡 Correções Futuras
+
+Melhorias de compatibilidade:
+
+* Windows 10
+* Windows 11
+* drivers antigos
+* FFmpeg builds diferentes
+
+---
+
+# ❤️ Créditos
+
+Powered by:
+
+* Auto-Editor
+* FFmpeg
+* Python
+* CustomTkinter
+
+---
+
+# ⭐ Contribuindo
+
+Pull requests são bem-vindos.
+
+Sugestões:
+
+* melhorias de UI
+* correções
+* novas exportações
+* novas automações
+* tratar excessões de errors ao usar multlipas funções
+* erros de ambiente 
+
+---
+
+# 📜 Licença
+
+Creative Commons Legal Code
+
+---
+
+# 🔥 AutoCutStudio
+
+```text
+Effortless Automatic Video Editing
+```

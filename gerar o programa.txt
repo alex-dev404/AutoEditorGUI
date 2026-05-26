@@ -1,0 +1,12 @@
+rode o programa: python app.py
+gerar um exe: pyinstaller --onefile --windowed --icon=icon.ico --add-data "icon.ico;." --name "AutoCutStudio" app.py
+
+EXPLICAÇÃO
+--onefile
+→ gera 1 EXE único
+--windowed
+→ remove terminal preto
+--name
+→ nome do EXE
+--icon=icone.ico
+→ ícone do app
