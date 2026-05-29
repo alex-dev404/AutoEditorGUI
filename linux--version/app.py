@@ -2,12 +2,12 @@ import os
 import sys
 import subprocess
 import threading
+import tkinter as tk
 import customtkinter as ctk
 
 from tkinter import filedialog
 from PIL import Image
 from tkinterdnd2 import DND_FILES, TkinterDnD
-
 # =========================================
 # CONFIG
 # =========================================
@@ -27,6 +27,20 @@ video_paths = []
 thumbnail_refs = []
 
 # =========================================
+# RESOURCE PATH
+# =========================================
+
+def resource_path(relative_path):
+
+    try:
+        base_path = sys._MEIPASS
+
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+# =========================================
 # APP
 # =========================================
 
@@ -35,6 +49,22 @@ app = TkinterDnD.Tk()
 app.title("AutoCutStudio BY alex-dev404")
 app.geometry("1280x760")
 app.minsize(1000, 650)
+# WINDOWS ICON
+try:
+    app.iconbitmap(resource_path("icon.ico"))
+except:
+    pass
+
+# LINUX ICON
+try:
+    app.iconphoto(
+        True,
+        tk.PhotoImage(
+            file=resource_path("icon.png")
+        )
+    )
+except:
+    pass
 app.configure(bg="#101010")
 def resource_path(relative_path):
 
