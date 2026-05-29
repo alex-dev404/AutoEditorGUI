@@ -7,9 +7,9 @@ on:
 
 jobs:
 
-  # =========================
+  # =========================================
   # WINDOWS BUILD
-  # =========================
+  # =========================================
 
   build-windows:
 
@@ -23,17 +23,11 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
-        cache: 'pip'
+        python-version: "3.11"
 
     - name: Install Dependencies
       run: |
-        pip install pyinstaller
-        pip install auto-editor
-        pip install customtkinter
-        pip install pillow
-        pip install tkinterdnd2
-        pip install ffmpeg-python
+        pip install -r requirements.txt
 
     - name: Verify Files
       run: |
@@ -60,9 +54,9 @@ jobs:
 
 
 
-  # =========================
+  # =========================================
   # LINUX BUILD
-  # =========================
+  # =========================================
 
   build-linux:
 
@@ -76,22 +70,16 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
-        cache: 'pip'
+        python-version: "3.11"
 
     - name: Install Linux Packages
       run: |
         sudo apt update
         sudo apt install ffmpeg libfuse2 -y
 
-    - name: Install Python Dependencies
+    - name: Install Dependencies
       run: |
-        pip install pyinstaller
-        pip install auto-editor
-        pip install customtkinter
-        pip install pillow
-        pip install tkinterdnd2
-        pip install ffmpeg-python
+        pip install -r requirements.txt
 
     - name: Verify Files
       run: |
@@ -108,7 +96,7 @@ jobs:
         --name "AutoCutStudio" \
         app.py
 
-    - name: Create AppDir
+    - name: Create AppDir Structure
       run: |
         mkdir -p AppDir/usr/bin
         mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps

@@ -1,0 +1,6 @@
+auto-editor
+customtkinter
+pillow
+tkinterdnd2
+ffmpeg-python
+pyinstaller
