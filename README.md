@@ -479,21 +479,239 @@ O FFmpeg pode:
 
 # 🐧 Versão Linux
 
-Planejado suporte para:
+O AutoCutStudio agora possui suporte experimental para Linux 🚀
 
-* Ubuntu
-* PopOS
-* Arch
-* Fedora
+Distribuições testadas:
 
-com:
-
-* AppImage
-* Flatpak
-* .deb
+```text
+✔ Ubuntu
+✔ Pop!_OS
+✔ Linux Mint
+✔ Fedora
+✔ Arch Linux
+```
 
 ---
 
+# 📦 Formato Disponível
+
+Atualmente o app é distribuído como:
+
+```text
+AppImage
+```
+
+O AppImage funciona como um executável portátil:
+
+* não precisa instalar
+* funciona em praticamente qualquer distro
+* basta baixar e executar
+
+---
+
+# 📥 Como baixar
+
+Baixe a versão Linux em:
+
+```text
+GitHub → Actions → Latest Build → Artifacts
+```
+
+ou futuramente na aba:
+
+```text
+Releases
+```
+
+---
+
+# ▶ Como executar o AppImage
+
+Depois de baixar:
+
+## 1️⃣ Dar permissão de execução
+
+```bash
+chmod +x AutoCutStudio*.AppImage
+```
+
+---
+
+## 2️⃣ Executar
+
+```bash
+./AutoCutStudio*.AppImage
+```
+
+---
+
+# 🛠 Instalação Manual no Linux
+
+Caso queira rodar pelo Python:
+
+## Instalar dependências
+
+Ubuntu / Debian:
+
+```bash
+sudo apt update
+
+sudo apt install python3 python3-pip ffmpeg python3-tk -y
+```
+
+---
+
+## Instalar bibliotecas Python
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Rodar o programa
+
+```bash
+python3 app.py
+```
+
+---
+
+# 🧠 O que o AppImage inclui
+
+```text
+✔ Interface gráfica
+✔ Auto-Editor
+✔ Ícones Linux
+✔ Sistema Drag & Drop
+✔ Compatibilidade AppImage
+✔ Integração KDE/GNOME
+```
+
+---
+
+# ⚠ Possíveis Problemas no Linux
+
+# AppImage não abre
+
+Instale:
+
+Ubuntu:
+
+```bash
+sudo apt install libfuse2
+```
+
+Fedora:
+
+```bash
+sudo dnf install fuse
+```
+
+Arch:
+
+```bash
+sudo pacman -S fuse2
+```
+
+---
+
+# FFmpeg não encontrado
+
+Instale:
+
+Ubuntu:
+
+```bash
+sudo apt install ffmpeg
+```
+
+Arch:
+
+```bash
+sudo pacman -S ffmpeg
+```
+
+Fedora:
+
+```bash
+sudo dnf install ffmpeg
+```
+
+---
+
+# Tkinter não encontrado
+
+Ubuntu:
+
+```bash
+sudo apt install python3-tk
+```
+
+---
+
+# Wayland Issues
+
+Em alguns ambientes Wayland o Drag & Drop pode apresentar comportamento experimental.
+
+Caso aconteça:
+
+* use X11
+* ou execute:
+
+```bash
+QT_QPA_PLATFORM=xcb
+```
+
+---
+
+# 🛣 Futuro da versão Linux
+
+Planejado:
+
+```text
+✔ Flatpak
+✔ .deb
+✔ Pacote Arch
+✔ Instalador automático
+✔ Repositórios oficiais
+✔ Melhor integração GNOME/KDE
+✔ Tema adaptativo
+✔ Suporte Wayland completo
+```
+
+---
+
+# ⚡ Build Automática Linux
+
+O projeto possui CI/CD automático usando:
+
+```text
+GitHub Actions
+```
+
+Cada commit gera automaticamente:
+
+```text
+✔ Windows EXE
+✔ Linux AppImage
+```
+
+---
+
+# ❤️ Compatibilidade
+
+O objetivo do projeto é manter suporte para:
+
+```text
+✔ Windows 10
+✔ Windows 11
+✔ Ubuntu
+✔ Fedora
+✔ Arch Linux
+✔ Pop!_OS
+✔ Linux Mint
+```
 # 🛡 Correções Futuras
 
 Melhorias de compatibilidade:
