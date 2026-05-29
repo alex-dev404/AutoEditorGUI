@@ -93,6 +93,7 @@ jobs:
       - name: Copy Icons
         run: |
           cp icon.png AppDir/usr/share/icons/hicolor/256x256/apps/icon.png
+          cp icon.png AppDir/icon.png
           cp icon.png AppDir/.DirIcon
 
       - name: Create Desktop Entry
