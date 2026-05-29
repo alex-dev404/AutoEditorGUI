@@ -17,40 +17,32 @@ jobs:
 
     steps:
 
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-    - name: Install Dependencies
-      run: |
-        pip install -r requirements.txt
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
 
-    - name: Verify Files
-      run: |
-        dir
+      - name: Verify Files
+        run: |
+          dir
 
-    - name: Build Windows EXE
-      run: |
-        pyinstaller ^
-        --onefile ^
-        --windowed ^
-        --clean ^
-        --noconfirm ^
-        --icon=icon.ico ^
-        --add-data "icon.ico;." ^
-        --add-data "icon.png;." ^
-        --name "AutoCutStudio" ^
-        app.py
+      - name: Build Windows EXE
+        shell: cmd
+        run: |
+          pyinstaller --onefile --windowed --clean --noconfirm --icon=icon.ico --add-data "icon.ico;." --add-data "icon.png;." --name "AutoCutStudio" app.py
 
-    - name: Upload Windows Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: AutoCutStudio-Windows
-        path: dist/AutoCutStudio.exe
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoCutStudio-Windows
+          path: dist/AutoCutStudio.exe
 
 
 
@@ -64,77 +56,68 @@ jobs:
 
     steps:
 
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-    - name: Install Linux Packages
-      run: |
-        sudo apt update
-        sudo apt install ffmpeg libfuse2 -y
+      - name: Install Linux Packages
+        run: |
+          sudo apt update
+          sudo apt install ffmpeg libfuse2 -y
 
-    - name: Install Dependencies
-      run: |
-        pip install -r requirements.txt
+      - name: Install Python Dependencies
+        run: |
+          pip install -r requirements.txt
 
-    - name: Verify Files
-      run: |
-        ls
+      - name: Verify Files
+        run: |
+          ls
 
-    - name: Build Linux Binary
-      run: |
-        pyinstaller \
-        --onefile \
-        --windowed \
-        --clean \
-        --noconfirm \
-        --add-data "icon.png:." \
-        --name "AutoCutStudio" \
-        app.py
+      - name: Build Linux Binary
+        run: |
+          pyinstaller --onefile --windowed --clean --noconfirm --add-data "icon.png:." --name "AutoCutStudio" app.py
 
-    - name: Create AppDir Structure
-      run: |
-        mkdir -p AppDir/usr/bin
-        mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+      - name: Create AppDir Structure
+        run: |
+          mkdir -p AppDir/usr/bin
+          mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
 
-    - name: Copy Binary
-      run: |
-        cp dist/AutoCutStudio AppDir/usr/bin/
+      - name: Copy Binary
+        run: |
+          cp dist/AutoCutStudio AppDir/usr/bin/
 
-    - name: Copy Icons
-      run: |
-        cp icon.png AppDir/usr/share/icons/hicolor/256x256/apps/icon.png
-        cp icon.png AppDir/.DirIcon
+      - name: Copy Icons
+        run: |
+          cp icon.png AppDir/usr/share/icons/hicolor/256x256/apps/icon.png
+          cp icon.png AppDir/.DirIcon
 
-    - name: Create Desktop Entry
-      run: |
-        cat > AppDir/AutoCutStudio.desktop <<EOF
-        [Desktop Entry]
-        Name=AutoCutStudio
-        Exec=AutoCutStudio
-        Icon=icon
-        Type=Application
-        Categories=AudioVideo;
-        EOF
+      - name: Create Desktop Entry
+        run: |
+          echo '[Desktop Entry]' > AppDir/AutoCutStudio.desktop
+          echo 'Name=AutoCutStudio' >> AppDir/AutoCutStudio.desktop
+          echo 'Exec=AutoCutStudio' >> AppDir/AutoCutStudio.desktop
+          echo 'Icon=icon' >> AppDir/AutoCutStudio.desktop
+          echo 'Type=Application' >> AppDir/AutoCutStudio.desktop
+          echo 'Categories=AudioVideo;' >> AppDir/AutoCutStudio.desktop
 
-    - name: Download AppImageTool
-      run: |
-        wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+      - name: Download AppImageTool
+        run: |
+          wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
 
-    - name: Make AppImageTool Executable
-      run: |
-        chmod +x appimagetool-x86_64.AppImage
+      - name: Make AppImageTool Executable
+        run: |
+          chmod +x appimagetool-x86_64.AppImage
 
-    - name: Build AppImage
-      run: |
-        ARCH=x86_64 ./appimagetool-x86_64.AppImage AppDir
+      - name: Build AppImage
+        run: |
+          ARCH=x86_64 ./appimagetool-x86_64.AppImage AppDir
 
-    - name: Upload Linux Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: AutoCutStudio-Linux
-        path: "*.AppImage"
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoCutStudio-Linux
+          path: "*.AppImage"
