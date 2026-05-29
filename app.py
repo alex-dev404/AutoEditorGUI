@@ -46,7 +46,7 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 app.iconbitmap(
-    resource_path("icon.ico")
+    resource_path("icon.png")
 )
 
 # =========================================

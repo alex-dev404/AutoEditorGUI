@@ -1,0 +1,37 @@
+RODAR O PROGRAMA:
+python3 app.py
+
+GERAR BUILD LINUX:
+pyinstaller \
+--onefile \
+--windowed \
+--clean \
+--noconfirm \
+--name "AutoCutStudio" \
+--icon=icon.png \
+app.py
+
+GERAR APPIMAGE:
+python3 -m pip install pyinstaller
+sudo apt install libfuse2 -y
+
+mkdir -p AppDir/usr/bin
+mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+
+cp dist/AutoCutStudio AppDir/usr/bin/
+cp icon.png AppDir/usr/share/icons/hicolor/256x256/apps/
+
+cat > AppDir/AutoCutStudio.desktop <<EOF
+[Desktop Entry]
+Name=AutoCutStudio
+Exec=AutoCutStudio
+Icon=icon
+Type=Application
+Categories=AudioVideo;
+EOF
+
+wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+
+chmod +x appimagetool-x86_64.AppImage
+
+ARCH=x86_64 ./appimagetool-x86_64.AppImage AppDir
