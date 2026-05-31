@@ -2,14 +2,7 @@ RODAR O PROGRAMA:
 python3 app.py
 
 GERAR BUILD LINUX:
-pyinstaller \
---onefile \
---windowed \
---clean \
---noconfirm \
---name "AutoCutStudio" \
---icon=icon.png \
-app.py
+pyinstaller --onefile --windowed --clean --noconfirm --name "AutoCutStudio" app.py
 
 GERAR APPIMAGE:
 python3 -m pip install pyinstaller

@@ -2,12 +2,12 @@ import os
 import sys
 import subprocess
 import threading
+import tkinter as tk
 import customtkinter as ctk
 
 from tkinter import filedialog
 from PIL import Image
 from tkinterdnd2 import DND_FILES, TkinterDnD
-
 # =========================================
 # CONFIG
 # =========================================
@@ -27,6 +27,20 @@ video_paths = []
 thumbnail_refs = []
 
 # =========================================
+# RESOURCE PATH
+# =========================================
+
+def resource_path(relative_path):
+
+    try:
+        base_path = sys._MEIPASS
+
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+# =========================================
 # APP
 # =========================================
 
@@ -35,6 +49,22 @@ app = TkinterDnD.Tk()
 app.title("AutoCutStudio BY alex-dev404")
 app.geometry("1280x760")
 app.minsize(1000, 650)
+# WINDOWS ICON
+try:
+    app.iconbitmap(resource_path("icon.ico"))
+except:
+    pass
+
+# LINUX ICON
+try:
+    app.iconphoto(
+        True,
+        tk.PhotoImage(
+            file=resource_path("icon.png")
+        )
+    )
+except:
+    pass
 app.configure(bg="#101010")
 def resource_path(relative_path):
 
@@ -45,9 +75,8 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-app.iconbitmap(
-    resource_path("icon.png")
-)
+if os.name == "nt":
+    app.iconbitmap(resource_path("icone.ico"))
 
 # =========================================
 # FONTS
@@ -264,26 +293,26 @@ def drop(event):
 # INSTALL DEPENDENCIES
 # =========================================
 
-def instalar_dependencias_thread():
+# =========================================
+# INSTALL DEPENDENCIES
+# =========================================
 
+def instalar_dependencias_thread():
     comandos = [
-        "pip install auto-editor",
-        "pip install ffmpeg-python",
-        "pip install customtkinter",
-        "pip install pillow",
-        "pip install tkinterdnd2"
+        "pipx install auto-editor",
+        "pipx install ffmpeg-python",
+        "pipx install customtkinter",
+        "pipx install pillow",
+        "pipx install tkinterdnd2",
+        "python3 -m venv venv && source venv/bin/activate && pip install auto-editor ffmpeg-python customtkinter pillow tkinterdnd2 && deactivate",
+        "pip install auto-editor ffmpeg-python customtkinter pillow tkinterdnd2 --break-system-packages"
     ]
 
     total = len(comandos)
-
     progress_bar.set(0)
 
     for i, cmd in enumerate(comandos, start=1):
-
-        status_label.configure(
-            text=f"Instalando dependências ({i}/{total})"
-        )
-
+        status_label.configure(text=f"Instalando dependências ({i}/{total})")
         log(f"\nExecutando:\n{cmd}\n")
 
         resultado = subprocess.run(
@@ -294,13 +323,11 @@ def instalar_dependencias_thread():
         progress_bar.set(i / total)
 
         if resultado.returncode == 0:
-            log("✅ Instalado")
+            log("✅ Instalado com sucesso")
         else:
-            log("❌ Erro")
+            log("❌ Erro ou já instalado")
 
-    status_label.configure(
-        text="Dependências instaladas"
-    )
+    status_label.configure(text="Dependências instaladas")
 
 def instalar_dependencias():
 
@@ -377,10 +404,10 @@ def processar_videos_thread():
         # =========================================
 
         comando = (
-            f'auto-editor "{video}" '
+            f'python3 -m auto_editor "{video}" '
             f'--export {export_value} '
             f'--output "{arquivo_saida}" '
-        )
+            )
 
         # =========================================
         # MARGIN NORMAL

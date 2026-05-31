@@ -1,1 +1,0 @@
-futara biblioteca python modificada do autor editor uso gpu

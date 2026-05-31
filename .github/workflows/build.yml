@@ -12,11 +12,9 @@ jobs:
   # =========================================
 
   build-windows:
-
     runs-on: windows-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -36,7 +34,11 @@ jobs:
       - name: Build Windows EXE
         shell: cmd
         run: |
-          pyinstaller --onefile --windowed --clean --noconfirm --icon=icon.ico --add-data "icon.ico;." --add-data "icon.png;." --name "AutoCutStudio" app.py
+          pyinstaller --onefile --windowed --clean --noconfirm ^
+            --icon=icon.ico ^
+            --add-data "icon.ico;." ^
+            --add-data "icon.png;." ^
+            --name "AutoCutStudio" app.py
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
@@ -51,11 +53,9 @@ jobs:
   # =========================================
 
   build-linux:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -67,7 +67,7 @@ jobs:
       - name: Install Linux Packages
         run: |
           sudo apt update
-          sudo apt install ffmpeg libfuse2 -y
+          sudo apt install ffmpeg libfuse2 patchelf -y
 
       - name: Install Python Dependencies
         run: |
@@ -75,11 +75,15 @@ jobs:
 
       - name: Verify Files
         run: |
-          ls
+          ls -la
 
       - name: Build Linux Binary
         run: |
-          pyinstaller --onefile --windowed --clean --noconfirm --add-data "icon.png:." --name "AutoCutStudio" app.py
+          pyinstaller --onefile --windowed --clean --noconfirm \
+            --icon=icon.png \
+            --add-data "icon.png:." \
+            --add-data "icon.ico:." \
+            --name "AutoCutStudio" app.py
 
       - name: Create AppDir Structure
         run: |
@@ -89,10 +93,11 @@ jobs:
       - name: Copy Binary
         run: |
           cp dist/AutoCutStudio AppDir/usr/bin/
+          chmod +x AppDir/usr/bin/AutoCutStudio
 
       - name: Copy Icons
         run: |
-          cp icon.png AppDir/usr/share/icons/hicolor/256x256/apps/icon.png
+          cp icon.png AppDir/usr/share/icons/hicolor/256x256/apps/AutoCutStudio.png
           cp icon.png AppDir/icon.png
           cp icon.png AppDir/.DirIcon
 
@@ -101,7 +106,7 @@ jobs:
           echo '[Desktop Entry]' > AppDir/AutoCutStudio.desktop
           echo 'Name=AutoCutStudio' >> AppDir/AutoCutStudio.desktop
           echo 'Exec=AutoCutStudio' >> AppDir/AutoCutStudio.desktop
-          echo 'Icon=icon' >> AppDir/AutoCutStudio.desktop
+          echo 'Icon=AutoCutStudio' >> AppDir/AutoCutStudio.desktop
           echo 'Type=Application' >> AppDir/AutoCutStudio.desktop
           echo 'Categories=AudioVideo;' >> AppDir/AutoCutStudio.desktop
 
