@@ -73,10 +73,6 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Verify Files
-        run: |
-          ls -la
-
       - name: Build Linux Binary
         run: |
           pyinstaller --onefile --windowed --clean --noconfirm \
@@ -98,7 +94,7 @@ jobs:
       - name: Copy Icons
         run: |
           cp icon.png AppDir/usr/share/icons/hicolor/256x256/apps/AutoCutStudio.png
-          cp icon.png AppDir/icon.png
+          cp icon.png AppDir/AutoCutStudio.png   # <- ESSENCIAL para o AppImageTool
           cp icon.png AppDir/.DirIcon
 
       - name: Create Desktop Entry
@@ -109,6 +105,10 @@ jobs:
           echo 'Icon=AutoCutStudio' >> AppDir/AutoCutStudio.desktop
           echo 'Type=Application' >> AppDir/AutoCutStudio.desktop
           echo 'Categories=AudioVideo;' >> AppDir/AutoCutStudio.desktop
+
+      - name: Verify AppDir
+        run: |
+          ls -la AppDir
 
       - name: Download AppImageTool
         run: |
