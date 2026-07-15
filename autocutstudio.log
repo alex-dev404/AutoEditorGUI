@@ -1,0 +1,34 @@
+2026-05-31 21:36:33,157 - ERROR - Erro ao gerar thumbnail: PIL.Image and PIL.ImageTk couldn't be imported
+2026-05-31 21:36:41,575 - INFO - 
+Executando:
+python3 -m auto_editor "/home/alex/Vídeos/2026-05-31 20-24-09.mp4" --export resolve --output "/home/alex/Vídeos/2026-05-31 20-24-09.drt" --margin 0.20sec 
+
+2026-05-31 21:36:41,700 - INFO - ✅ Finalizado: 2026-05-31 20-24-09.mp4
+2026-06-02 17:00:03,581 - ERROR - Erro ao gerar thumbnail: PIL.Image and PIL.ImageTk couldn't be imported
+2026-06-02 17:00:12,518 - INFO - 
+Executando:
+python3 -m auto_editor "/home/alex/Vídeos/2026-06-02 16-38-06.mkv" --export kdenlive --output "/home/alex/Vídeos/2026-06-02 16-38-06.kdenlive" --margin 0.00sec 
+
+2026-06-02 17:00:12,644 - INFO - ✅ Finalizado: 2026-06-02 16-38-06.mkv
+2026-06-02 17:01:56,346 - INFO - 
+Executando:
+python3 -m auto_editor "/home/alex/Vídeos/2026-06-02 16-38-06.mkv" --export kdenlive --output "/home/alex/Vídeos/2026-06-02 16-38-06.kdenlive" --margin 0.50sec 
+
+2026-06-02 17:01:56,459 - INFO - ✅ Finalizado: 2026-06-02 16-38-06.mkv
+2026-06-02 17:09:49,317 - ERROR - Erro ao gerar thumbnail: PIL.Image and PIL.ImageTk couldn't be imported
+2026-06-02 17:09:54,541 - INFO - 
+Executando:
+python3 -m auto_editor "/home/alex/Vídeos/2026-06-02 16-38-06.mkv" --export kdenlive --output "/home/alex/Vídeos/2026-06-02 16-38-06.kdenlive" --margin 0.00sec 
+
+2026-06-02 17:09:54,665 - INFO - ✅ Finalizado: 2026-06-02 16-38-06.mkv
+2026-06-02 17:11:54,026 - ERROR - Erro ao gerar thumbnail: PIL.Image and PIL.ImageTk couldn't be imported
+2026-06-02 17:11:56,946 - INFO - 
+Executando:
+python3 -m auto_editor "/home/alex/Vídeos/2026-06-02 16-38-06.mkv" --export resolve --output "/home/alex/Vídeos/2026-06-02 16-38-06.drt" --margin 0.00sec 
+
+2026-06-02 17:11:57,069 - INFO - ✅ Finalizado: 2026-06-02 16-38-06.mkv
+2026-06-02 17:13:30,874 - INFO - 
+Executando:
+python3 -m auto_editor "/home/alex/Vídeos/2026-06-02 16-38-06.mkv" --export kdenlive --output "/home/alex/Vídeos/2026-06-02 16-38-06.kdenlive" --margin 0.45sec 
+
+2026-06-02 17:13:30,994 - INFO - ✅ Finalizado: 2026-06-02 16-38-06.mkv
